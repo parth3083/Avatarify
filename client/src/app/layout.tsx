@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import LenisScroll from "./LenisScroll";
+import Loading from "@/components/Loading";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,8 +33,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <ClerkLoading>
+            <Loading />
+          </ClerkLoading>
           <ClerkLoaded>
-            <LenisScroll/>
+            <LenisScroll />
             <Navbar />
             {children}
           </ClerkLoaded>
