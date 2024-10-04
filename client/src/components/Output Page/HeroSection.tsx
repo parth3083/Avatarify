@@ -28,7 +28,7 @@ function HeroSection() {
       </p>
 
       <Link
-        href={"/"}
+        href={"/upload"}
         className="px-2 py-2 bg-[#2664EF] rounded-md text-3xl font-ala font-medium text-white cursor-pointer"
       >
         Generate More

@@ -1,5 +1,5 @@
 import React from "react";
-import image1 from "../../app/assets/avatar.jpeg";
+import image1 from "@/app/assets/upload.png";
 import Image from "next/image";
 
 function Image_Container({ className }: { className?: string }) {
@@ -10,10 +10,10 @@ function Image_Container({ className }: { className?: string }) {
       <div className="w-full h-full rounded-md bg-blue-500">
         <Image
           src={image1}
-          width={300}
-          height={300}
+          width={1610}
+          height={872}
           alt="image"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-conatin"
         />
       </div>
     </div>
