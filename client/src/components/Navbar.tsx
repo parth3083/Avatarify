@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 
 function Navbar() {
-
   const { user, isLoaded, isSignedIn } = useUser();
   return (
     <nav className="w-full overflow-hidden font-ala fixed top-0 z-50 bg-white h-10 md:h-12 lg:h-12 flex items-center px-3 lg:px-40 justify-between shadow-md shadow-slate-500">
@@ -17,12 +16,10 @@ function Navbar() {
         </Link>
       </div>
 
-      <div
-        className="right flex items-center gap-3 lg:gap-5 justify-between">
-                {isLoaded ? (
+      <div className="right flex items-center gap-3 lg:gap-5 justify-between">
+        {isLoaded ? (
           isSignedIn ? (
             <>
-
               <Link
                 href={"/userdashboard"}
                 className="px-2 py-1 rounded-md text-ala font-normal text-white text-lg cursor-pointer bg-[#2664EF]"
@@ -33,12 +30,9 @@ function Navbar() {
                 <UserButton />
                 {user?.username}
               </div>
-
-   
             </>
           ) : (
-              <>
-
+            <>
               <Link
                 href={"/sign-in"}
                 className="px-2 py-1 rounded-md text-ala font-normal text-white text-lg cursor-pointer bg-[#2664EF]"
@@ -51,18 +45,12 @@ function Navbar() {
               >
                 Sign Up
               </Link>
-          
-        
             </>
           )
         ) : (
           <div>Loading...</div>
         )}
-
-
-
-       </div>
-
+      </div>
     </nav>
   );
 }
