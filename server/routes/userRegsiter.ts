@@ -5,7 +5,7 @@ const registerUser = async (req: Request, res: Response) => {
   try {
     const { username, email, clerkId } = req.body;
 
-    const isUserAlreadyExists = await UserModel.find({ email: email });
+    const isUserAlreadyExists = await UserModel.findOne({ email: email });
 
     if (isUserAlreadyExists) {
       res.status(201).json({ message: "User already exists" });

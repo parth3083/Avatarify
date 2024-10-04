@@ -1,4 +1,3 @@
-import React from "react";
 import MaxWidth from "../MaxWidth";
 import CardContainer from "./CardContainer";
 
