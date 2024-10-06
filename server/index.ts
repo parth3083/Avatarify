@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import connectDb from "./config/dbConnect";
 import registerUser from "./routes/userRegsiter";
+import { AvatarDetails } from "./routes/avatarGeneration";
 require("dotenv").config();
 
 const app = express();
@@ -18,7 +19,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Backend is working ");
 });
 
-app.post("/register-user",registerUser)
+app.post("/register-user", registerUser)
+app.use('/details',AvatarDetails)
 
 app.listen(8000, () => {
   console.log("http://localhost:8000");
