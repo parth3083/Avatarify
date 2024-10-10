@@ -3,7 +3,7 @@ import UserModel from "../models/user";
 
 const registerUser = async (req: Request, res: Response) => {
   try {
-    const { username, email, clerkId, firstName, lastName, phoneNumber } =
+    const { username, email, clerkId, firstName, lastName, phoneNumber,imageUrl } =
       req.body;
 
     const isUserAlreadyExists = await UserModel.findOne({ email: email });
@@ -18,6 +18,7 @@ const registerUser = async (req: Request, res: Response) => {
         firstName,
         lastName,
         phoneNumber,
+        imageUrl,
         createdAt: Date.now(),
       });
       const response = await newUser.save();

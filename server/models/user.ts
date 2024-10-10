@@ -13,6 +13,7 @@ interface UserDetails extends Document {
   address?: string;
   dateOfBirth?: Date;
   dateOfAnniversary?: Date;
+  imageUrl: string;
   createdAt: Date;
 }
 
@@ -34,6 +35,11 @@ const userSchema: Schema<UserDetails> = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+    unique: true,
   },
   lastName: {
     type: String,

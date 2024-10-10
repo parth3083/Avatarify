@@ -20,6 +20,7 @@ function Navbar() {
     const firstName=user?.firstName
     const lastName = user?.lastName
     const phoneNumber = user?.phoneNumbers[0]?.phoneNumber || ""
+    const imageUrl = user?.imageUrl
  
 
     const response = await axios.post("http://localhost:8000/register-user", {
@@ -29,6 +30,7 @@ function Navbar() {
       firstName,
       lastName,
       phoneNumber,
+      imageUrl
     });
     if (response.status == 200) {
       toast({
