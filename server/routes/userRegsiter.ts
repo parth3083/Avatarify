@@ -3,7 +3,8 @@ import UserModel from "../models/user";
 
 const registerUser = async (req: Request, res: Response) => {
   try {
-    const { username, email, clerkId } = req.body;
+    const { username, email, clerkId, firstName, lastName, phoneNumber } =
+      req.body;
 
     const isUserAlreadyExists = await UserModel.findOne({ email: email });
 
@@ -14,10 +15,12 @@ const registerUser = async (req: Request, res: Response) => {
         username,
         email,
         clerkId,
+        firstName,
+        lastName,
+        phoneNumber,
         createdAt: Date.now(),
       });
       const response = await newUser.save();
-      console.log(response);
       res.status(200).json({ message: "Usersave sucessfully" });
     }
   } catch (error) {

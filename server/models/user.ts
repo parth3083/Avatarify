@@ -6,13 +6,13 @@ interface UserDetails extends Document {
   clerkId: string;
   firstName: string;
   lastName: string;
-  phoneNumber: string; 
+  phoneNumber: string;
   country?: string;
   state?: string;
   city?: string;
   address?: string;
-  dateOfBirth?: Date; 
-  dateOfAnniversary?: Date; 
+  dateOfBirth?: Date;
+  dateOfAnniversary?: Date;
   createdAt: Date;
 }
 
@@ -39,8 +39,8 @@ const userSchema: Schema<UserDetails> = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phoneNumber: { 
-    type: String, 
+  phoneNumber: {
+    type: String,
     required: true,
     unique: true,
   },
@@ -54,10 +54,10 @@ const userSchema: Schema<UserDetails> = new mongoose.Schema({
     type: String,
   },
   dateOfBirth: {
-    type: Date, 
+    type: Date,
   },
-  dateOfAnniversary: { 
-    type: Date, 
+  dateOfAnniversary: {
+    type: Date,
   },
   address: {
     type: String,

@@ -88,4 +88,8 @@ html.lenis body {
   pointer-events: none;
 }
 
+.font_bold_class{
+  font-weight: bold;
+}
+
 

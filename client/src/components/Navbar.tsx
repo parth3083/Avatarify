@@ -16,11 +16,19 @@ function Navbar() {
     const email = user?.emailAddresses[0]?.emailAddress || "";
     const username = user?.username;
     const clerkId = user?.id;
+  
+    const firstName=user?.firstName
+    const lastName = user?.lastName
+    const phoneNumber = user?.phoneNumbers[0]?.phoneNumber || ""
+ 
 
     const response = await axios.post("http://localhost:8000/register-user", {
       email,
       username,
       clerkId,
+      firstName,
+      lastName,
+      phoneNumber,
     });
     if (response.status == 200) {
       toast({
@@ -34,6 +42,7 @@ function Navbar() {
     }
   };
   useEffect(() => {
+ 
     if (isAuthenticated) {
       try {
         userRegistration(user);
