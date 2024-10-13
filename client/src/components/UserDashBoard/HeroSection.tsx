@@ -36,48 +36,48 @@ function HeroSection() {
   const [address, setAddress] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false); // State to handle editing mode
 
-  useEffect(() => {
-    async function fetchUserDetails() {
-      try {
-        if (!email) {
-          redirect("/");
-        }
-
-        // Fetch user details from backend
-        const response = await axios.get("http://localhost:8000/fetch-details", {
-          params: { email },
-        });
-
-        const details = response.data.data;
-
-        // Set the fetched data in the state
-        setUserDetails({
-          firstName: details.firstName || "",
-          lastName: details.lastName || "",
-          phoneNumber: details.phoneNumber || "",
-          clerkId: details.clerkId || "",
-          email: details.email || "",
-          imageUrl: details.imageUrl || "",
-          userName: details.username || "",
-          country: details.country || "",
-          dateOfBirth: details.dateOfBirth || "",
-          dateOfAnniversary: details.dateOfAnniversary || "",
-          address: details.address || "",
-          state: details.state || "",
-          city: details.city || "",
-        });
-
-        // Populate local state with user details if available
-        if (details.country) setCountry(details.country);
-        if (details.state) setState(details.state);
-        if (details.city) setCity(details.city);
-        if (details.address) setAddress(details.address);
-        if (details.dateOfBirth) setDob(new Date(details.dateOfBirth));
-        if (details.dateOfAnniversary) setAnniversary(new Date(details.dateOfAnniversary));
-      } catch (error) {
-        console.error("Error fetching user details:", error);
+  async function fetchUserDetails() {
+    try {
+      if (!email) {
+        redirect("/");
       }
+
+      // Fetch user details from backend
+      const response = await axios.get("http://localhost:8000/fetch-details", {
+        params: { email },
+      });
+
+      const details = response.data.data;
+
+      // Set the fetched data in the state
+      setUserDetails({
+        firstName: details.firstName || "",
+        lastName: details.lastName || "",
+        phoneNumber: details.phoneNumber || "",
+        clerkId: details.clerkId || "",
+        email: details.email || "",
+        imageUrl: details.imageUrl || "",
+        userName: details.username || "",
+        country: details.country || "",
+        dateOfBirth: details.dateOfBirth || "",
+        dateOfAnniversary: details.dateOfAnniversary || "",
+        address: details.address || "",
+        state: details.state || "",
+        city: details.city || "",
+      });
+
+      // Populate local state with user details if available
+      if (details.country) setCountry(details.country);
+      if (details.state) setState(details.state);
+      if (details.city) setCity(details.city);
+      if (details.address) setAddress(details.address);
+      if (details.dateOfBirth) setDob(new Date(details.dateOfBirth));
+      if (details.dateOfAnniversary) setAnniversary(new Date(details.dateOfAnniversary));
+    } catch (error) {
+      console.error("Error fetching user details:", error);
     }
+  }
+  useEffect(() => {
 
     fetchUserDetails();
   }, [email, isSignedIn, user]);
@@ -91,7 +91,8 @@ function HeroSection() {
         toast({
           description: "User data updated successfully",
         });
-        setIsEditing(false); // Exit editing mode after successful update
+        setIsEditing(false);
+        fetchUserDetails();// Exit editing mode after successful update
       }
     } catch (error) {
       console.log(error);
@@ -120,7 +121,7 @@ function HeroSection() {
 
   return (
     <MaxWidth>
-      <h1 className="font-ala text-3xl lg:text-5xl capitalize font-bold mt-5">My Profile</h1>
+      <h1 className="font-ala text-3xl lg:text-5xl text-[#2664EF] capitalize font-bold mt-5">My Profile</h1>
       <form onSubmit={handleSubmit} className="w-[98%] mt-5 mx-auto rounded-md">
         <div className="first_row w-full px-2 flex lg:px-10 gap-7 items-center">
           <div className="left h-full">
@@ -151,16 +152,16 @@ function HeroSection() {
         <div className="second_row flex flex-col gap-2 lg:gap-5 mt-10 items-center w-full px-0 lg:px-10">
           <div className="upper_part w-full px-2 lg:px-10 flex items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">First Name</span>: {userDetails.firstName}
+              <span className="font_bold_class">First Name</span> : {userDetails.firstName}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Last Name</span>: {userDetails.lastName}
+              <span className="font_bold_class">Last Name</span> : {userDetails.lastName}
             </h1>
           </div>
 
           <div className="lower_part w-full px-2 lg:px-10 flex items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Phone Number</span>: {userDetails.phoneNumber}
+              <span className="font_bold_class">Phone Number</span> : {userDetails.phoneNumber}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
               <span className="font_bold_class">Clerk Id</span>: {userDetails.clerkId}
@@ -170,7 +171,7 @@ function HeroSection() {
           {/* Conditionally Render Country, State, City, Address */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Country</span>: 
+              <span className="font_bold_class">Country</span> : {" "} 
               {isEditing ? (
                 <input
                   onChange={(e) => setCountry(e.target.value)}
@@ -183,7 +184,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">State</span>: 
+              <span className="font_bold_class">State</span> : {" "} 
               {isEditing ? (
                 <input
                   onChange={(e) => setState(e.target.value)}
@@ -200,7 +201,7 @@ function HeroSection() {
           {/* Conditionally Render Address and City */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Address</span>: 
+              <span className="font_bold_class">Address</span> : {" "} 
               {isEditing ? (
                 <textarea
                   onChange={(e) => setAddress(e.target.value)}
@@ -212,7 +213,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">City</span>: 
+              <span className="font_bold_class">City</span> : {" "} 
               {isEditing ? (
                 <input
                   onChange={(e) => setCity(e.target.value)}
@@ -229,7 +230,7 @@ function HeroSection() {
           {/* Conditionally Render Date of Birth and Date of Anniversary */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Birth</span>: 
+              <span className="font_bold_class">Date of Birth</span> : {" "} 
               {isEditing ? (
                 <DatePickerDemo date={dob} setDate={setDob} />
               ) : (
@@ -237,7 +238,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Anniversary</span>: 
+              <span className="font_bold_class">Date of Anniversary</span> : {" "}  
               {isEditing ? (
                 <DatePickerDemo date={anniversary} setDate={setAnniversary} />
               ) : (
@@ -250,13 +251,13 @@ function HeroSection() {
         <div className="buttons mt-5 flex gap-3 justify-end">
           <button 
             type="button" 
-            className={`bg-blue-600 text-white font-ala py-2 px-5 rounded-md ${isEditing ? "hidden" : "block"}`} 
+            className={`border-2 border-black hover:bg-black hover:text-white transition-all ease-in-out duration-300 text-black  font-medium font-ala py-2 px-5 rounded-md ${isEditing ? "hidden" : "block"}`} 
             onClick={() => setIsEditing(true)}
           >
-            Update User
+            Update 
           </button>
-          <button type="submit" className="bg-green-600 text-white font-ala py-2 px-5 rounded-md">
-            Submit
+          <button type="submit" className="border-2 border-black hover:bg-black hover:text-white transition-all ease-in-out duration-300 text-black  font-medium font-ala py-2 px-5 rounded-md">
+            Proceed
           </button>
         </div>
       </form>

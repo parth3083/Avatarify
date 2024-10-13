@@ -1,5 +1,5 @@
 import MaxWidth from "@/components/MaxWidth";
-import HeroSection from "@/components/Upload page/HeroSection";
+import HeroSection from "@/components/myAvatar/HeroSection";
 
 function page() {
   return (
