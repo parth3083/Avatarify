@@ -4,31 +4,76 @@ import { SlCloudUpload } from "react-icons/sl";
 import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { avatarOptions } from "@/index";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
 function HeroSection() {
+  const { toast } = useToast();
   const { user } = useUser();
   const isAuthenticated = !!user;
+  const email = user?.emailAddresses[0]?.emailAddress || "";
 
   if (!isAuthenticated) {
     redirect("/");
   }
 
-  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [file, setUploadedImage] = useState<File | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<any>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
-
- 
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedImage(file);
-      setPreviewImageUrl(URL.createObjectURL(file)); 
+      setPreviewImageUrl(URL.createObjectURL(file));
     }
   };
 
   const handleAvatarSelect = (avatar: any) => {
     setSelectedAvatar(avatar);
+  };
+
+  async function uploadImage() {
+    const avatarID = selectedAvatar.id;
+
+    const formData = new FormData(); // Create a FormData object
+    formData.append("file", file as Blob); // Append the file
+    formData.append("email", email);
+    formData.append("avatarID", avatarID);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/image-details/upload",
+        formData, // Send the FormData
+        { headers: { "Content-Type": "multipart/form-data" } } // Set the header for multipart
+      );
+
+      if (response.status === 200) {
+        toast({
+          description: "Image uploaded successfully",
+          type: "foreground",
+        });
+        setSelectedAvatar(null);
+        setUploadedImage(null);
+        setPreviewImageUrl(null); // Clear the preview image URL if necessary
+      }
+    } catch (error) {
+      console.error(error); // Log any error for debugging
+      toast({
+        description: "Upload failed. Please try again.",
+      });
+    }
+  }
+
+  const handleUpload = () => {
+    if (!selectedAvatar || !file) {
+      toast({
+        description: "Please select an avatar or upload an image.",
+      });
+      return; // Ensure to return early if validation fails
+    }
+
+    uploadImage();
   };
 
   return (
@@ -76,7 +121,6 @@ function HeroSection() {
                   height={150}
                   onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
                   onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
-               
                 ></video>
               </div>
               <div className="lower flex flex-col items-start justify-start px-2 w-full h-[12%]">
@@ -91,7 +135,7 @@ function HeroSection() {
         <h1 className="font-ala text-3xl text-left w-full lg:text-4xl text-black capitalize font-bold">
           Preview
         </h1>
-        <div className="w-full h-[135vw] lg:h-80 px-16 lg:flex-row flex-col gap-10 lg:gap-0 flex items-center justify-between mt-5">
+        <div className="w-full h-[145vw] lg:h-80 px-16 lg:flex-row flex-col gap-10 lg:gap-0 flex items-center justify-between mt-5">
           <div className="left flex flex-col items-center w-full lg:w-[45%] h-full mb-3">
             <div className="upper w-full flex items-center justify-center h-[12%]">
               <h1 className="font-ala font-medium text-2xl">Uploaded Image</h1>
@@ -118,10 +162,8 @@ function HeroSection() {
                 <video
                   src={selectedAvatar.videoUrl}
                   className="w-full h-full object-contain"
-                  
                   onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
                   onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
-                
                 ></video>
               ) : (
                 <p>No avatar selected</p>
@@ -132,7 +174,10 @@ function HeroSection() {
       </div>
 
       <div className="w-full h-16 mb-10 flex items-center justify-center">
-        <button className="p-2 rounded-md text-[#2664EF] border-2 border-[#2664EF] hover:bg-[#2664EF] hover:text-white transition-all ease-in-out duration-300 text-2xl font-ala font-medium">
+        <button
+          onClick={handleUpload}
+          className="p-2 rounded-md text-[#2664EF] border-2 border-[#2664EF] hover:bg-[#2664EF] hover:text-white transition-all ease-in-out duration-300 text-2xl font-ala font-medium"
+        >
           Upload Image
         </button>
       </div>
