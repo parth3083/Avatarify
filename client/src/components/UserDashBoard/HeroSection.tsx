@@ -4,13 +4,14 @@ import { DatePickerDemo } from "../DatePicker";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import { useToast } from "@/hooks/use-toast";
 
 function HeroSection() {
   const { toast } = useToast();
   const { user, isSignedIn } = useUser();
   const email = user?.emailAddresses?.[0]?.emailAddress || "";
+  const router = useRouter(); // Initialize useRouter
 
   const [userDetails, setUserDetails] = useState({
     firstName: "",
@@ -39,7 +40,8 @@ function HeroSection() {
   async function fetchUserDetails() {
     try {
       if (!email) {
-        redirect("/");
+        router.push("/"); // Use router.push for redirection
+        return; 
       }
 
       // Fetch user details from backend
@@ -67,32 +69,38 @@ function HeroSection() {
       });
 
       // Populate local state with user details if available
-      if (details.country) setCountry(details.country);
-      if (details.state) setState(details.state);
-      if (details.city) setCity(details.city);
-      if (details.address) setAddress(details.address);
-      if (details.dateOfBirth) setDob(new Date(details.dateOfBirth));
-      if (details.dateOfAnniversary) setAnniversary(new Date(details.dateOfAnniversary));
+      setCountry(details.country || "");
+      setState(details.state || "");
+      setCity(details.city || "");
+      setAddress(details.address || "");
+      setDob(new Date(details.dateOfBirth || ""));
+      setAnniversary(new Date(details.dateOfAnniversary || ""));
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
   }
-  useEffect(() => {
 
-    fetchUserDetails();
-  }, [email, isSignedIn, user]);
+  useEffect(() => {
+    if (isSignedIn) {
+      fetchUserDetails();
+    } else {
+      router.push("/"); // Use router.push for redirection if not signed in
+    }
+  }, [isSignedIn, email]);
 
   async function updateUserDetails() {
     try {
       const response = await axios.post("http://localhost:8000/update-details", {
         email, state, city, address, country, dob, anniversary,
       });
+
       if (response.status === 200) {
         toast({
           description: "User data updated successfully",
         });
         setIsEditing(false);
-        fetchUserDetails();// Exit editing mode after successful update
+        fetchUserDetails();
+        router.push("/my-message"); // Use router.push for redirection after successful update
       }
     } catch (error) {
       console.log(error);
@@ -104,8 +112,7 @@ function HeroSection() {
     if (isEditing) {
       updateUserDetails();
     } else {
-      // Logic for submitting to the next page
-      redirect("/next-page"); // Change this to your actual redirection logic
+      router.push("/my-message"); // Use router.push if not editing
     }
   };
 
@@ -227,38 +234,43 @@ function HeroSection() {
             </h1>
           </div>
 
-          {/* Conditionally Render Date of Birth and Date of Anniversary */}
-          <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
+          {/* Date of Birth and Anniversary */}
+          <div className="dates w-full px-2 lg:px-10 flex justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
               <span className="font_bold_class">Date of Birth</span> : {" "} 
               {isEditing ? (
                 <DatePickerDemo date={dob} setDate={setDob} />
               ) : (
-                formatFullDate(userDetails.dateOfBirth) || "N/A"
+                formatFullDate(userDetails.dateOfBirth)
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Anniversary</span> : {" "}  
+              <span className="font_bold_class">Date of Anniversary</span> : {" "} 
               {isEditing ? (
                 <DatePickerDemo date={anniversary} setDate={setAnniversary} />
               ) : (
-                formatFullDate(userDetails.dateOfAnniversary) || "N/A"
+                formatFullDate(userDetails.dateOfAnniversary)
               )}
             </h1>
           </div>
         </div>
 
-        <div className="buttons mt-5 flex gap-3 justify-end">
-          <button 
-            type="button" 
-            className={`border-2 border-black hover:bg-black hover:text-white transition-all ease-in-out duration-300 text-black  font-medium font-ala py-2 px-5 rounded-md ${isEditing ? "hidden" : "block"}`} 
-            onClick={() => setIsEditing(true)}
+        <div className="actions w-full flex items-center gap-10 justify-center  mt-10">
+          <button
+            type="button"
+            onClick={() => setIsEditing(!isEditing)}
+            className="p-2 font-ala text-2xl flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
           >
-            Update 
+            {isEditing ? "Cancel" : "Edit"}
           </button>
-          <button type="submit" className="border-2 border-black hover:bg-black hover:text-white transition-all ease-in-out duration-300 text-black  font-medium font-ala py-2 px-5 rounded-md">
-            Proceed
-          </button>
+          {isEditing && (
+            <button
+              type="submit"
+              className="p-2 font-ala text-2xl flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
+            >
+              Update
+            </button>
+          )}
         </div>
       </form>
     </MaxWidth>
@@ -266,3 +278,4 @@ function HeroSection() {
 }
 
 export default HeroSection;
+
