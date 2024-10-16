@@ -4,6 +4,9 @@ import { IoMdAdd } from "react-icons/io";
 import { DatePickerDemo } from "../DatePicker";
 import { Slider } from "@/components/ui/slider";
 import { DropdownMenuRadioGroupDemo } from "../ui/DropDownList";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import { useUser } from "@clerk/nextjs";
 
 // Define the Message type
 interface Message {
@@ -14,7 +17,8 @@ interface Message {
 }
 
 function HeroSection() {
-  // Initialize messages state with one default message component
+  const { user, isSignedIn } = useUser();
+  const email = user?.emailAddresses[0]?.emailAddress||""
   const [messages, setMessages] = useState<Message[]>([
     {
       message: "",
@@ -107,8 +111,26 @@ function HeroSection() {
     );
   };
 
+  async function messageUpload() {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/upload-message",
+        { messages,email }
+      );
+      if (response.status === 200) {
+        toast({
+          description: "Messages uploaded successfully",
+        });
+        setMessages([]); 
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleGenerateClick = () => {
     console.log("Messages:", messages);
+    messageUpload();
   };
 
   return (
