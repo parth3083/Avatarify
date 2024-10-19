@@ -41,7 +41,7 @@ function HeroSection() {
     try {
       if (!email) {
         router.push("/"); // Use router.push for redirection
-        return; 
+        return;
       }
 
       // Fetch user details from backend
@@ -178,7 +178,7 @@ function HeroSection() {
           {/* Conditionally Render Country, State, City, Address */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Country</span> : {" "} 
+              <span className="font_bold_class">Country</span> : {" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setCountry(e.target.value)}
@@ -191,7 +191,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">State</span> : {" "} 
+              <span className="font_bold_class">State</span> : {" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setState(e.target.value)}
@@ -208,7 +208,7 @@ function HeroSection() {
           {/* Conditionally Render Address and City */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Address</span> : {" "} 
+              <span className="font_bold_class">Address</span> : {" "}
               {isEditing ? (
                 <textarea
                   onChange={(e) => setAddress(e.target.value)}
@@ -220,7 +220,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">City</span> : {" "} 
+              <span className="font_bold_class">City</span> : {" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setCity(e.target.value)}
@@ -237,7 +237,7 @@ function HeroSection() {
           {/* Date of Birth and Anniversary */}
           <div className="dates w-full px-2 lg:px-10 flex justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Birth</span> : {" "} 
+              <span className="font_bold_class">Date of Birth</span> : {" "}
               {isEditing ? (
                 <DatePickerDemo date={dob} setDate={setDob} />
               ) : (
@@ -245,7 +245,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Anniversary</span> : {" "} 
+              <span className="font_bold_class">Date of Anniversary</span> : {" "}
               {isEditing ? (
                 <DatePickerDemo date={anniversary} setDate={setAnniversary} />
               ) : (
@@ -274,8 +274,7 @@ function HeroSection() {
         </div>
       </form>
     </MaxWidth>
-  );
+  )
 }
 
 export default HeroSection;
-
