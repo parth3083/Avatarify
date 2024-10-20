@@ -60,3 +60,7 @@ const userMessages = async (req, res) => {
   });
 };
 module.exports = userMessages;
+
+
+
+// Cortana give me the code for the model this is the final model means it will store each and everything first of all the model will contain the username it will contain the email id now this both user name and email id will come from already present model that is the user model now then it will use this image model that you just give me right now from that I will take the image url and I will take the gif url and there is also one model name as the messages model I will provide you the code of messages model and from the messages model what I want to take is the what messages user has sent the date the time and the occurrence of the message and now there is also one more thing that is the video so I will also upload that video from the Claudinary and you have to store the final videos secure url into the model and hereby I am providing you the code of all three models : 
