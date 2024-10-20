@@ -43,10 +43,10 @@ const userSchema = new mongoose.Schema({
         type: String,
       },
       dateOfBirth: {
-        type: Date,
+        type: String,
       },
       dateOfAnniversary: {
-        type: Date,
+        type: String,
       },
       address: {
         type: String,

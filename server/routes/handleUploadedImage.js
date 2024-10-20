@@ -57,9 +57,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
             genderPredictor.stderr.on('data', (data) => {
                 console.error(`stderr: ${data}`);
             });
-        } else if (avatarID == 3) { // Do not run gender prediction for avatarID 3
-            // This block is intentionally left blank or could contain other logic for avatarID 3
-            // Spawn the "image_animation.py" script
+        } else if (avatarID == 3) { 
             const imageAnimationProcess = spawn('python', [path.join(__dirname, '../utils/imageAnimation.py'), imagePath]);
             imageAnimationProcess.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
@@ -70,7 +68,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
             imageAnimationProcess.on('close', (code) => {
                 console.log(`image_animation.py process exited with code ${code}`);
-                // Always run combine_gif_and_audio.py and audio_length.py
+                
                 runCombineAndAudioLength();
             });
         }

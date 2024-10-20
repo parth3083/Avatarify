@@ -1,36 +1,61 @@
 const mongoose = require("mongoose");
 
-const imageDetails = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
+const avatarSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    messages: [
+      {
+        message: {
+          type: String,
+          required: true,
+        },
+        date: {
+          type: String,  // You can change this to Date type if needed
+          required: true,
+        },
+        time: {
+          type: Number,
+          required: true,
+        },
+        recurrence: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    avatarId: {
+      type: Number,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      required: true,
+    },
+    gifUrl: {
+      type: String,
+      required: true,
+    },
+    videoUrl: {
+      type: String,
+      required: true,
+    },
+    audioLength: {
+      type: Number,
+      required: true,
+    }
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  imageUrl: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  gifUrl: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  selectedAvatarId: {
-    type: Number,
-    require: true,
-    unique: true,
-  },
-});
+  {
+    timestamps: true, 
+  }
+);
 
-const ImageModel = mongoose.model("Image-Details", imageDetails);
-module.exports = ImageModel;
+const AvatarModel = mongoose.model("avatarDetails", avatarSchema);
+
+module.exports = AvatarModel;
