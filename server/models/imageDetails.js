@@ -46,10 +46,7 @@ const avatarSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    audioLength: {
-      type: Number,
-      required: true,
-    }
+
   },
   {
     timestamps: true, 
