@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { SlCloudUpload } from "react-icons/sl";
 import { useUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { avatarOptions } from "@/index";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -14,6 +14,7 @@ function HeroSection() {
   const isAuthenticated = !!user;
   const email = user?.emailAddresses[0]?.emailAddress || "";
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   if (!isAuthenticated) {
     redirect("/");
@@ -60,7 +61,8 @@ function HeroSection() {
         setSelectedAvatar(null);
         setUploadedImage(null);
         setPreviewImageUrl(null);
-        setIsLoading(false)// Clear the preview image URL if necessary
+        setIsLoading(false)
+        router.push('/output')// Clear the preview image URL if necessary
       }
     } catch (error) {
       console.error(error); // Log any error for debugging

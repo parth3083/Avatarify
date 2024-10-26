@@ -89,6 +89,11 @@ function handleGender(gender, avatarID) {
     }
   }
 }
+const getTodayDate = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+};
 
 async function runCombineAndAudioLength(req, res) {
   const combineProcess = spawn("python", [
@@ -104,6 +109,7 @@ async function runCombineAndAudioLength(req, res) {
       const imagePath = path.join(__dirname, "../uploads");
       const gifPath = path.join(__dirname, "../GIF");
       const videoPath = path.join(__dirname, "../output");
+      const audioPath = path.join(__dirname, "../audio");
 
       console.log(imagePath);
       console.log(gifPath);
@@ -112,6 +118,7 @@ async function runCombineAndAudioLength(req, res) {
       const imageFiles = fs.readdirSync(imagePath);
       const gifFiles = fs.readdirSync(gifPath);
       const videoFiles = fs.readdirSync(videoPath);
+      const audioFiles = fs.readdirSync(audioPath);
 
       console.log(`Image Files: ${imageFiles}`);
       console.log(`GIF Files: ${gifFiles}`);
@@ -161,6 +168,17 @@ async function runCombineAndAudioLength(req, res) {
           .json({ message: "User or message data not found" });
       }
 
+      const todayDate = getTodayDate();
+
+      const todaysMessages = messageData.messages.filter((msg) => {
+        const msgDate = new Date(msg.date);
+        return (
+          msgDate.getFullYear() === todayDate.getFullYear() &&
+          msgDate.getMonth() === todayDate.getMonth() &&
+          msgDate.getDate() === todayDate.getDate()
+        );
+      });
+
       const avatarData = new AvatarModel({
         username: user.username,
         email: user.email,
@@ -168,7 +186,7 @@ async function runCombineAndAudioLength(req, res) {
         imageUrl: imageUpload.secure_url,
         gifUrl: gifUpload.secure_url,
         videoUrl: videoUpload.secure_url,
-        messages: messageData.messages,
+        messages: todaysMessages,
       });
 
       await avatarData.save();
@@ -176,7 +194,14 @@ async function runCombineAndAudioLength(req, res) {
       fs.unlinkSync(path.join(imagePath, imageFile));
       fs.unlinkSync(path.join(gifPath, gifFile));
       fs.unlinkSync(path.join(videoPath, videoFile));
-      fs.unlinkSync(path.join(__dirname, "../audio"));
+      if (audioFiles.length > 0) {
+        audioFiles.forEach((file) => {
+          fs.unlink(path.join(audioPath, file), (err) => {
+            if (err) console.error(`Error deleting audio file ${file}:`, err);
+            else console.log(`Deleted audio file ${file}`);
+          });
+        });
+      }
 
       return res
         .status(200)

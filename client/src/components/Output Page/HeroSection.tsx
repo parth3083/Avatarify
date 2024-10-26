@@ -5,6 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 
+
 function HeroSection() {
   const { user, isSignedIn } = useUser();
   const email = user?.emailAddresses[0]?.emailAddress || "";
@@ -14,6 +15,7 @@ function HeroSection() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   async function fetchDetails() {
+ 
     if (!email) return;
     try {
       const response = await axios.get("http://localhost:8000/fetch", {
@@ -47,8 +49,8 @@ function HeroSection() {
   
     if (avatarDetails?.message) {
       const messageTime = avatarDetails.message.time; 
-      const messageMinute = 0; 
-      if (currentHour === messageTime && currentMinute === messageMinute) {
+    
+      if (currentHour === messageTime ) {
         setIsVideoPlaying(true);
       } else {
         setIsVideoPlaying(false);
@@ -62,11 +64,11 @@ function HeroSection() {
         Your Avatar
       </h1>
 
-      <div className="lg:w-80 w-56 md:w-96 md:h-96  lg:h-80 h-56 rounded-lg flex items-center justify-center  overflow-hidden">
+      <div className="lg:w-96 w-56 md:w-96 md:h-96  lg:h-80 h-56  rounded-lg flex items-center justify-center  overflow-hidden">
        
         {avatarDetails?.message && avatarDetails.videoUrl && (
-          <div>
-            <video  className="w-full h-full object-cover" autoPlay={isVideoPlaying} muted>
+          <div className="w-full h-full">
+            <video  className="w-full h-full object-contain "  autoPlay={isVideoPlaying} >
               <source src={avatarDetails.videoUrl} type="video/mp4" />
              
             </video>
@@ -83,7 +85,7 @@ function HeroSection() {
       </p>
 
       <Link
-        href={"/upload"}
+        href={"/my-message"}
         className="px-2 py-2 bg-[#2664EF] rounded-md text-3xl font-ala font-medium text-white cursor-pointer"
       >
         Generate More

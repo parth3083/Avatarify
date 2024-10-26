@@ -7,18 +7,15 @@ const getTodaysMessage = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-
     const avatar = await MessageModel.findOne({ email });
     if (!avatar) {
       return res.status(404).json({ message: "Avatar not found" });
     }
 
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-
 
     const todayMessages = avatar.messages.filter((message) => {
       const messageDate = new Date(message.date);
@@ -29,18 +26,16 @@ const getTodaysMessage = async (req, res) => {
       return res.status(404).json({ message: "No messages found for today" });
     }
 
-
     const currentTime = new Date();
     let closestMessage = null;
     let closestTimeDiff = Infinity;
 
     todayMessages.forEach((msg) => {
       const messageTime = new Date();
-      messageTime.setHours(msg.time); 
+      messageTime.setHours(msg.time);
       messageTime.setMinutes(0);
       messageTime.setSeconds(0);
 
-   
       const timeDiff = Math.abs(currentTime - messageTime);
       if (timeDiff < closestTimeDiff) {
         closestTimeDiff = timeDiff;
@@ -48,7 +43,6 @@ const getTodaysMessage = async (req, res) => {
       }
     });
 
-   
     const responseData = {
       username: avatar.username,
       email: avatar.email,
@@ -56,7 +50,7 @@ const getTodaysMessage = async (req, res) => {
       imageUrl: avatar.imageUrl,
       gifUrl: avatar.gifUrl,
       videoUrl: avatar.videoUrl,
-      message: closestMessage, 
+      message: closestMessage,
     };
 
     return res.status(200).json(responseData);
