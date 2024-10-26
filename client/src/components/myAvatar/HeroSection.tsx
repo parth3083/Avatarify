@@ -6,12 +6,14 @@ import { redirect } from "next/navigation";
 import { avatarOptions } from "@/index";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import OutputLoader from "../OutputLoader";
 
 function HeroSection() {
   const { toast } = useToast();
   const { user } = useUser();
   const isAuthenticated = !!user;
   const email = user?.emailAddresses[0]?.emailAddress || "";
+  const [isLoading, setIsLoading] = useState(false)
 
   if (!isAuthenticated) {
     redirect("/");
@@ -34,7 +36,9 @@ function HeroSection() {
   };
 
   async function uploadImage() {
+    setIsLoading(true)
     const avatarID = selectedAvatar.id;
+
 
     const formData = new FormData(); // Create a FormData object
     formData.append("file", file as Blob); // Append the file
@@ -55,7 +59,8 @@ function HeroSection() {
         });
         setSelectedAvatar(null);
         setUploadedImage(null);
-        setPreviewImageUrl(null); // Clear the preview image URL if necessary
+        setPreviewImageUrl(null);
+        setIsLoading(false)// Clear the preview image URL if necessary
       }
     } catch (error) {
       console.error(error); // Log any error for debugging
@@ -77,7 +82,11 @@ function HeroSection() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center md:gap-14 lg:mt-0 mt-0 gap-8 lg:gap-8 ">
+    <>
+      {isLoading ? (<>
+      <OutputLoader/>
+      </>) : (<>
+        <div className="w-full flex flex-col items-center md:gap-14 lg:mt-0 mt-0 gap-8 lg:gap-8 ">
       <h1 className="font-ala text-3xl text-left w-full lg:text-5xl text-[#2664EF] capitalize font-bold ">
         My Avatar
       </h1>
@@ -181,7 +190,8 @@ function HeroSection() {
           Upload Image
         </button>
       </div>
-    </div>
+    </div></>)}
+    </>
   );
 }
 

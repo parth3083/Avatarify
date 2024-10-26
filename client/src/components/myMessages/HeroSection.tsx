@@ -7,39 +7,41 @@ import { DropdownMenuRadioGroupDemo } from "../ui/DropDownList";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useUser } from "@clerk/nextjs";
+import MessageLoader from "../MessageLoader";
+import { useRouter } from "next/navigation"; 
 
-// Define the Message type
+
 interface Message {
   message: string;
   date: string;
-  time: number; // Changed to a number for proper slider handling (24-hour format)
+  time: number;
   recurrence: string;
 }
 
 function HeroSection() {
   const { user, isSignedIn } = useUser();
-  const email = user?.emailAddresses[0]?.emailAddress||""
+  const router = useRouter(); 
+  const email = user?.emailAddresses[0]?.emailAddress || "";
   const [messages, setMessages] = useState<Message[]>([
     {
       message: "",
-      date: new Date().toLocaleDateString(), // Default to current date
-      time: new Date().getHours(), // Default to current hour (in 24-hour format)
-      recurrence: "once", // Default to "once"
+      date: new Date().toLocaleDateString(),
+      time: new Date().getHours(),
+      recurrence: "once",
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Function to add a new message component
   const handleAddMessage = () => {
     const newMessage: Message = {
       message: "",
-      date: new Date().toLocaleDateString(), // Default to current date
-      time: new Date().getHours(), // Default to current hour (24-hour format)
-      recurrence: "once", // Default to "once"
+      date: new Date().toLocaleDateString(),
+      time: new Date().getHours(),
+      recurrence: "once",
     };
-    setMessages([...messages, newMessage]); // Add the new message to the array
+    setMessages([...messages, newMessage]);
   };
 
-  // Function to handle changes to individual message fields
   const handleMessageChange = (
     index: number,
     field: keyof Message,
@@ -51,7 +53,6 @@ function HeroSection() {
     setMessages(updatedMessages);
   };
 
-  // Function to render individual message components
   const renderMessageComponent = (message: Message, index: number) => {
     return (
       <div
@@ -59,8 +60,6 @@ function HeroSection() {
         className="message_card border-2 border-[#2664EF] px-4 py-2 rounded-lg shadow-md mb-4"
       >
         <h1 className="font-ala text-2xl mb-2">Message {index + 1}</h1>
-
-        {/* Message Input */}
         <input
           type="text"
           placeholder="Enter your message"
@@ -70,8 +69,6 @@ function HeroSection() {
           }
           className="outline-2 p-2 font-ala mb-3 text-lg font-normal w-full rounded-md"
         />
-
-        {/* Date Picker */}
         <div className="w-full flex mb-3 items-center gap-10">
           <h1 className="font-ala text-2xl">Select Date:</h1>
           <DatePickerDemo
@@ -81,23 +78,19 @@ function HeroSection() {
             }
           />
         </div>
-
-        {/* Time Slider */}
         <div className="w-full mb-5">
           <h1 className="font-ala text-2xl">Select Time: {message.time}:00</h1>
           <Slider
             min={0}
             max={23}
             step={1}
-            value={[message.time]} // Pass the time as an array
-            onValueChange={
-              (timeArray) => handleMessageChange(index, "time", timeArray[0]) // Get the first element of the array
+            value={[message.time]}
+            onValueChange={(timeArray) =>
+              handleMessageChange(index, "time", timeArray[0])
             }
             className="mt-2"
           />
         </div>
-
-        {/* Recurrence Dropdown */}
         <div className="w-full flex mb-3 items-center gap-10">
           <h1 className="font-ala text-2xl">Repeat:</h1>
           <DropdownMenuRadioGroupDemo
@@ -113,15 +106,18 @@ function HeroSection() {
 
   async function messageUpload() {
     try {
+      setIsLoading(true);
       const response = await axios.post(
         "http://localhost:8000/upload-message",
-        { messages,email }
+        { messages, email }
       );
       if (response.status === 200) {
+        setIsLoading(false);
         toast({
           description: "Messages uploaded successfully",
         });
-        setMessages([]); 
+        setMessages([]);
+        router.push('/my-avatar'); 
       }
     } catch (error) {
       console.log(error);
@@ -135,33 +131,39 @@ function HeroSection() {
 
   return (
     <>
-      <div className="w-full h-28 flex items-center justify-between">
-        <h1 className="font-ala text-3xl text-left w-fit lg:text-5xl text-[#2664EF] capitalize font-bold">
-          My Messages
-        </h1>
-        <button
-          onClick={handleAddMessage}
-          className="p-2 font-ala text-lg flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
-        >
-          <IoMdAdd />
-          New Message
-        </button>
-      </div>
+      {isLoading ? (
+        <MessageLoader />
+      ) : (
+        <>
+          <div className="w-full h-28 flex items-center justify-between">
+            <h1 className="font-ala text-3xl text-left w-fit lg:text-5xl text-[#2664EF] capitalize font-bold">
+              My Messages
+            </h1>
+            <button
+              onClick={handleAddMessage}
+              className="p-2 font-ala text-lg flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
+            >
+              <IoMdAdd />
+              New Message
+            </button>
+          </div>
 
-      <div className="message_container mt-6 w-full">
-        {messages.map((message, index) =>
-          renderMessageComponent(message, index)
-        )}
-      </div>
+          <div className="message_container mt-6 w-full">
+            {messages.map((message, index) =>
+              renderMessageComponent(message, index)
+            )}
+          </div>
 
-      <div className="w-full mt-2 mb-3 h-14 flex items-center justify-center">
-        <button
-          onClick={handleGenerateClick}
-          className="p-2 font-ala text-2xl flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
-        >
-          Generate
-        </button>
-      </div>
+          <div className="w-full mt-2 mb-3 h-14 flex items-center justify-center">
+            <button
+              onClick={handleGenerateClick}
+              className="p-2 font-ala text-2xl flex items-center gap-2 hover:text-white hover:bg-[#2664EF] border-2 transition-all ease-in-out duration-300 text-[#2664EF] rounded-md font-medium border-[#2664EF]"
+            >
+              Generate
+            </button>
+          </div>
+        </>
+      )}
     </>
   );
 }

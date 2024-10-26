@@ -165,75 +165,75 @@ function runCombineAndAudioLength() {
     console.log(`audio_file_length.py process exited with code ${code}`);
   });
 
-  uploadToCloudAndSave();
+  // uploadToCloudAndSave();
 }
-async function uploadToCloudAndSave(req, res) {
-  try {
-    // Paths for image, gif, video (assuming single file in each folder)
-    const imagePath = path.join(__dirname, "../uploads"); // Uploads folder
-    const gifPath = path.join(__dirname, "../GIF"); // GI folder
-    const videoPath = path.join(__dirname, "../output"); // Output folder
+// async function uploadToCloudAndSave(req, res) {
+//   try {
+    
+//     const imagePath = path.join(__dirname, "../uploads"); 
+//     const gifPath = path.join(__dirname, "../GIF"); 
+//     const videoPath = path.join(__dirname, "../output"); 
 
-    // Get the single files from each folder
-    const imageFile = fs.readdirSync(imagePath)[0];
-    const gifFile = fs.readdirSync(gifPath)[0];
-    const videoFile = fs.readdirSync(videoPath)[0];
+   
+//     const imageFile = fs.readdirSync(imagePath)[0];
+//     const gifFile = fs.readdirSync(gifPath)[0];
+//     const videoFile = fs.readdirSync(videoPath)[0];
 
-    // Cloudinary upload for image, gif, video
-    const imageUpload = await cloudinary.uploader.upload(
-      path.join(imagePath, imageFile),
-      { resource_type: "image" }
-    );
-    const gifUpload = await cloudinary.uploader.upload(
-      path.join(gifPath, gifFile),
-      { resource_type: "image" }
-    );
-    const videoUpload = await cloudinary.uploader.upload(
-      path.join(videoPath, videoFile),
-      { resource_type: "video" }
-    );
+   
+//     const imageUpload = await cloudinary.uploader.upload(
+//       path.join(imagePath, imageFile),
+//       { resource_type: "image" }
+//     );
+//     const gifUpload = await cloudinary.uploader.upload(
+//       path.join(gifPath, gifFile),
+//       { resource_type: "image" }
+//     );
+//     const videoUpload = await cloudinary.uploader.upload(
+//       path.join(videoPath, videoFile),
+//       { resource_type: "video" }
+//     );
 
-    // Retrieve user and message info from models
-    const { email } = req.body;
-    const user = await UserModel.findOne({ email });
-    const messageData = await MessageModel.findOne({ email });
+//     // Retrieve user and message info from models
+//     const { email } = req.body;
+//     const user = await UserModel.findOne({ email });
+//     const messageData = await MessageModel.findOne({ email });
 
-    if (!user || !messageData) {
-      return res
-        .status(404)
-        .json({ message: "User or message data not found" });
-    }
+//     if (!user || !messageData) {
+//       return res
+//         .status(404)
+//         .json({ message: "User or message data not found" });
+//     }
 
-    // Prepare avatar details data
-    const avatarData = new AvatarModel({
-      username: user.username,
-      email: user.email,
-      avatarId: avatarID,
-      imageUrl: imageUpload.secure_url,
-      gifUrl: gifUpload.secure_url,
-      videoUrl: videoUpload.secure_url,
 
-      messages: messageData.messages,
-    });
+//     const avatarData = new AvatarModel({
+//       username: user.username,
+//       email: user.email,
+//       avatarId: avatarID,
+//       imageUrl: imageUpload.secure_url,
+//       gifUrl: gifUpload.secure_url,
+//       videoUrl: videoUpload.secure_url,
 
-    // Save avatar details to the database
-    await avatarData.save();
+//       messages: messageData.messages,
+//     });
 
-    // Delete files from folders after upload
-    fs.unlinkSync(path.join(imagePath, imageFile));
-    fs.unlinkSync(path.join(gifPath, gifFile));
-    fs.unlinkSync(path.join(videoPath, videoFile));
+//     // Save avatar details to the database
+//     await avatarData.save();
 
-    return res
-      .status(200)
-      .json({ message: "Files uploaded and saved successfully" });
-  } catch (error) {
-    console.error(
-      "Error uploading to Cloudinary or saving to database:",
-      error
-    );
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
+//     // Delete files from folders after upload
+//     fs.unlinkSync(path.join(imagePath, imageFile));
+//     fs.unlinkSync(path.join(gifPath, gifFile));
+//     fs.unlinkSync(path.join(videoPath, videoFile));
+
+//     return res
+//       .status(200)
+//       .json({ message: "Files uploaded and saved successfully" });
+//   } catch (error) {
+//     console.error(
+//       "Error uploading to Cloudinary or saving to database:",
+//       error
+//     );
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// }
 
 module.exports = router;
