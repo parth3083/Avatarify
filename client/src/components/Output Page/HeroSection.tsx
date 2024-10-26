@@ -1,30 +1,85 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import MaxWidth from "../MaxWidth";
 import Link from "next/link";
-import Image from "next/image";
-import image1 from "@/app/assets/avatar.jpeg";
+import axios from "axios";
+import { useUser } from "@clerk/nextjs";
 
 function HeroSection() {
+  const { user, isSignedIn } = useUser();
+  const email = user?.emailAddresses[0]?.emailAddress || "";
+  const [avatarDetails, setAvatarDetails] = useState(null);
+  const [currentHour, setCurrentHour] = useState(new Date().getHours());
+  const [currentMinute, setCurrentMinute] = useState(new Date().getMinutes());
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  async function fetchDetails() {
+    if (!email) return;
+    try {
+      const response = await axios.get("http://localhost:8000/fetch", {
+        params: { email },
+      });
+      console.log(response.data);
+      setAvatarDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching avatar details:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (isSignedIn) {
+      fetchDetails();
+    }
+  }, [isSignedIn, email]);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentHour(now.getHours());
+      setCurrentMinute(now.getMinutes());
+    }, 60000); 
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+  
+    if (avatarDetails?.message) {
+      const messageTime = avatarDetails.message.time; 
+      const messageMinute = 0; 
+      if (currentHour === messageTime && currentMinute === messageMinute) {
+        setIsVideoPlaying(true);
+      } else {
+        setIsVideoPlaying(false);
+      }
+    }
+  }, [currentHour, currentMinute, avatarDetails]);
+
   return (
     <MaxWidth className="flex flex-col items-center gap-7 md:gap-10 lg:gap-7">
-      <h1 className="font-ala text-4xl font-bold md:text-6xl lg:text-6 xl capitalize text-center w-full pt-5">
+      <h1 className="font-ala text-4xl font-bold md:text-6xl lg:text-6xl capitalize text-center w-full pt-5">
         Your Avatar
       </h1>
 
-      <div className="lg:w-80 w-56 md:w-96 md:h-96 lg:h-80 h-56 rounded-full bg-green-500 overflow-hidden">
-        <Image
-          src={image1}
-          alt="avatar"
-          className="w-full h-full object-cover"
-          width={225}
-          height={225}
-        />
+      <div className="lg:w-80 w-56 md:w-96 md:h-96  lg:h-80 h-56 rounded-lg flex items-center justify-center  overflow-hidden">
+       
+        {avatarDetails?.message && avatarDetails.videoUrl && (
+          <div>
+            <video  className="w-full h-full object-cover" autoPlay={isVideoPlaying} muted>
+              <source src={avatarDetails.videoUrl} type="video/mp4" />
+             
+            </video>
+          </div>
+        )}
       </div>
+
       <p className="lg:text-xl text-sm md:text-lg font-ala w-[90%] font-medium lg:w-[60%] text-center">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit
-        omnis explicabo quod, at nihil unde neque dignissimos natus facilis iste
-        adipisci ex molestiae veritatis maxime doloremque numquam. Pariatur,
-        tempore obcaecati?
+        {avatarDetails?.message ? (
+          <span>{` ${avatarDetails.message.message}`}</span>
+        ) : (
+          "No messages available for today."
+        )}
       </p>
 
       <Link
@@ -38,3 +93,4 @@ function HeroSection() {
 }
 
 export default HeroSection;
+
