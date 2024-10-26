@@ -18,22 +18,24 @@ const messageSchema = new mongoose.Schema({
         required: true,
       },
       date: {
-        type: String,
+        type: Date, // Use Date type for easier querying and sorting by date
         required: true,
       },
       time: {
-        type: Number,
+        type: Number, // Stored as hour in 24-hour format (e.g., 13 for 1 PM)
         required: true,
       },
       recurrence: {
         type: String,
         required: true,
-      },
+        enum: ["once", "daily", "weekly", "monthly"], // Add enums for recurrence
+      }
     },
   ],
+}, {
+  timestamps: true,
 });
 
+const MessageModel = mongoose.model("Message", messageSchema);
 
-const messageModel = mongoose.model("message", messageSchema);
-
-module.exports = messageModel;
+module.exports = MessageModel;
