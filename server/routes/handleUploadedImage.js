@@ -29,16 +29,18 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const imagePath = path.join(__dirname, "../uploads", file.filename);
 
     if (avatarID == 1) {
+      // If avatarID is 1, call gifCreator.py directly
       const pythonProcess = spawn("python", [
         path.join(__dirname, "../utils/gifCreator.py"),
         imagePath,
       ]);
 
       pythonProcess.on("close", (code) => {
-        console.log(`gif_creator.py process exited with code ${code}`);
+        console.log(`gifCreator.py process exited with code ${code}`);
         runCombineAndAudioLength(req, res);
       });
     } else if (avatarID == 2) {
+      // If avatarID is 2, first predict gender
       const genderPredictor = spawn("python", [
         path.join(__dirname, "../utils/genderPredict.py"),
         imagePath,
@@ -47,54 +49,46 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       genderPredictor.stdout.on("data", (data) => {
         const gender = data.toString().trim();
         console.log(`Predicted gender: ${gender}`);
-        handleGender(gender, avatarID);
-        runCombineAndAudioLength(req, res);
-      });
-    } else if (avatarID == 3) {
-      const imageAnimationProcess = spawn("python", [
-        path.join(__dirname, "../utils/imageAnimation.py"),
-        imagePath,
-      ]);
 
-      imageAnimationProcess.on("close", (code) => {
-        console.log(`image_animation.py process exited with code ${code}`);
-        runCombineAndAudioLength(req, res);
+        // Define genderValue based on the predicted gender
+        const genderValue = gender === "man" ? 1 : 2;
+
+        // Call faceSwapping.py with imagePath and genderValue
+        const faceSwapProcess = spawn("python", [
+          path.join(__dirname, "../utils/faceSwapping.py"),
+          imagePath,
+          genderValue.toString(),
+        ]);
+
+        faceSwapProcess.on("close", (code) => {
+          console.log(`faceSwapping.py exited with code ${code}`);
+
+          // Call Gifcreation.py after faceSwapping.py completes
+          const gifCreationProcess = spawn("python", [
+            path.join(__dirname, "../utils/Gifcreation.py"),
+          ]);
+
+          gifCreationProcess.on("close", (code) => {
+            console.log(`Gifcreation.py exited with code ${code}`);
+            runCombineAndAudioLength(req, res);
+          });
+        });
       });
-    }
+    } 
   } catch (error) {
     console.log("Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-function handleGender(gender, avatarID) {
-  const resourcesDir = path.join(__dirname, "../resources");
-  const gifDir = path.join(__dirname, "../GIF");
-
-  if (!fs.existsSync(resourcesDir) || !fs.existsSync(gifDir)) return;
-
-  if (avatarID == 2) {
-    const selectedGif =
-      gender === "man" ? "man_speaking.gif" : "woman_speaking.gif";
-    const sourceGif = path.join(resourcesDir, selectedGif);
-    const destinationGif = path.join(gifDir, selectedGif);
-
-    if (fs.existsSync(sourceGif)) {
-      try {
-        fs.copyFileSync(sourceGif, destinationGif);
-        console.log(`Copied GIF from ${sourceGif} to ${destinationGif}`);
-      } catch (err) {
-        console.error(`Error copying file: ${err}`);
-      }
-    }
-  }
-}
+// Function to get today's date in YYYY-MM-DD format
 const getTodayDate = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return today;
 };
 
+// Function to combine GIF and audio and handle Cloudinary uploads
 async function runCombineAndAudioLength(req, res) {
   const combineProcess = spawn("python", [
     path.join(__dirname, "../utils/combine_GIF_and_Audio.py"),
@@ -102,6 +96,7 @@ async function runCombineAndAudioLength(req, res) {
   const audioLengthProcess = spawn("python", [
     path.join(__dirname, "../utils/audioFileLength.py"),
   ]);
+  
   combineProcess.on("close", async (code) => {
     console.log(`combine_GIF_and_Audio.py exited with code ${code}`);
 
@@ -136,25 +131,19 @@ async function runCombineAndAudioLength(req, res) {
 
       const imageUpload = await cloudinary.uploader.upload(
         path.join(imagePath, imageFile),
-        {
-          resource_type: "image",
-        }
+        { resource_type: "image" }
       );
       console.log("Image uploaded:", imageUpload.secure_url);
 
       const gifUpload = await cloudinary.uploader.upload(
         path.join(gifPath, gifFile),
-        {
-          resource_type: "image",
-        }
+        { resource_type: "image" }
       );
       console.log("GIF uploaded:", gifUpload.secure_url);
 
       const videoUpload = await cloudinary.uploader.upload(
         path.join(videoPath, videoFile),
-        {
-          resource_type: "video",
-        }
+        { resource_type: "video" }
       );
       console.log("Video uploaded:", videoUpload.secure_url);
 

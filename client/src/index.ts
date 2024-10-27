@@ -26,10 +26,5 @@ export const avatarOptions = [
     videoUrl:
       "https://firebasestorage.googleapis.com/v0/b/portfolio-c2475.appspot.com/o/vid2.mp4?alt=media&token=ba99b0a3-9bd1-4e76-b9d8-8165ea7766ba",
   },
-  {
-    id: 3,
-    title: "Dancing",
-    videoUrl:
-      "https://firebasestorage.googleapis.com/v0/b/portfolio-c2475.appspot.com/o/Untitled_Project_V1.mp4?alt=media&token=768821ac-6c4d-4765-abec-80294f28410a",
-  },
+
 ];
