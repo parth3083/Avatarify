@@ -1,7 +1,7 @@
-# 🎨 Project Description: Avatar Generation
+# 🎨 Project Description: Avatarify : An Avatar Generator
 
 ## 🌟 Overview
-The **Avatar Generation** project enables users to create unique and personalized avatars by converting text messages into speech and integrating them into engaging videos. With a user-friendly interface, individuals can complete their profiles, input multiple messages, and select their preferred method of avatar presentation.
+The **Avatarify** enables users to create unique and personalized avatars by converting text messages into speech and integrating them into engaging videos. With a user-friendly interface, individuals can complete their profiles, input multiple messages, and select their preferred method of avatar presentation.
 
 ## 🛤️ User Journey
 
