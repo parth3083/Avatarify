@@ -5,7 +5,6 @@ import Link from "next/link";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 
-
 function HeroSection() {
   const { user, isSignedIn } = useUser();
   const email = user?.emailAddresses[0]?.emailAddress || "";
@@ -15,7 +14,6 @@ function HeroSection() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   async function fetchDetails() {
- 
     if (!email) return;
     try {
       const response = await axios.get("http://localhost:8000/fetch", {
@@ -34,23 +32,21 @@ function HeroSection() {
     }
   }, [isSignedIn, email]);
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
       setCurrentHour(now.getHours());
       setCurrentMinute(now.getMinutes());
-    }, 60000); 
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-  
     if (avatarDetails?.message) {
-      const messageTime = avatarDetails.message.time; 
-    
-      if (currentHour === messageTime ) {
+      const messageTime = avatarDetails.message.time;
+
+      if (currentHour === messageTime) {
         setIsVideoPlaying(true);
       } else {
         setIsVideoPlaying(false);
@@ -65,12 +61,13 @@ function HeroSection() {
       </h1>
 
       <div className="lg:w-96 w-56 md:w-96 md:h-96  lg:h-80 h-56  rounded-lg flex items-center justify-center  overflow-hidden">
-       
         {avatarDetails?.message && avatarDetails.videoUrl && (
           <div className="w-full h-full">
-            <video  className="w-full h-full object-contain "  autoPlay={isVideoPlaying} >
+            <video
+              className="w-full h-full object-contain "
+              autoPlay={isVideoPlaying}
+            >
               <source src={avatarDetails.videoUrl} type="video/mp4" />
-             
             </video>
           </div>
         )}
@@ -95,4 +92,3 @@ function HeroSection() {
 }
 
 export default HeroSection;
-

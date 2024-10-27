@@ -29,7 +29,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const imagePath = path.join(__dirname, "../uploads", file.filename);
 
     if (avatarID == 1) {
-      // If avatarID is 1, call gifCreator.py directly
       const pythonProcess = spawn("python", [
         path.join(__dirname, "../utils/gifCreator.py"),
         imagePath,
@@ -40,7 +39,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         runCombineAndAudioLength(req, res);
       });
     } else if (avatarID == 2) {
-      // If avatarID is 2, first predict gender
       const genderPredictor = spawn("python", [
         path.join(__dirname, "../utils/genderPredict.py"),
         imagePath,
@@ -50,10 +48,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         const gender = data.toString().trim();
         console.log(`Predicted gender: ${gender}`);
 
-        // Define genderValue based on the predicted gender
         const genderValue = gender === "man" ? 1 : 2;
 
-        // Call faceSwapping.py with imagePath and genderValue
         const faceSwapProcess = spawn("python", [
           path.join(__dirname, "../utils/faceSwapping.py"),
           imagePath,
@@ -63,7 +59,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         faceSwapProcess.on("close", (code) => {
           console.log(`faceSwapping.py exited with code ${code}`);
 
-          // Call Gifcreation.py after faceSwapping.py completes
           const gifCreationProcess = spawn("python", [
             path.join(__dirname, "../utils/Gifcreation.py"),
           ]);
@@ -74,21 +69,19 @@ router.post("/upload", upload.single("file"), async (req, res) => {
           });
         });
       });
-    } 
+    }
   } catch (error) {
     console.log("Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// Function to get today's date in YYYY-MM-DD format
 const getTodayDate = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return today;
 };
 
-// Function to combine GIF and audio and handle Cloudinary uploads
 async function runCombineAndAudioLength(req, res) {
   const combineProcess = spawn("python", [
     path.join(__dirname, "../utils/combine_GIF_and_Audio.py"),
@@ -96,7 +89,7 @@ async function runCombineAndAudioLength(req, res) {
   const audioLengthProcess = spawn("python", [
     path.join(__dirname, "../utils/audioFileLength.py"),
   ]);
-  
+
   combineProcess.on("close", async (code) => {
     console.log(`combine_GIF_and_Audio.py exited with code ${code}`);
 

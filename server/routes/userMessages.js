@@ -60,4 +60,3 @@ const userMessages = async (req, res) => {
   });
 };
 module.exports = userMessages;
-

@@ -8,8 +8,8 @@ const fetchUserDetails = async (req, res) => {
       return res.status(401).json({ message: "User doesnot exists" });
     }
     const userDetails = await UserModel.findOne({ email });
-      return res.status(200).json({
-        data: userDetails
+    return res.status(200).json({
+      data: userDetails,
     });
   } catch (error) {
     console.error(error);

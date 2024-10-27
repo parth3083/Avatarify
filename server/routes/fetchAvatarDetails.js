@@ -7,8 +7,10 @@ const getTodaysMessage = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // Find the latest document based on `updatedAt` or `createdAt`
-    const avatar = await MessageModel.findOne({ email }).sort({ updatedAt: -1, createdAt: -1 });
+    const avatar = await MessageModel.findOne({ email }).sort({
+      updatedAt: -1,
+      createdAt: -1,
+    });
 
     if (!avatar) {
       return res.status(404).json({ message: "Avatar not found" });
@@ -19,19 +21,21 @@ const getTodaysMessage = async (req, res) => {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    // Filter today's messages and sort them by the latest `updatedAt` or `createdAt`
     const todayMessages = avatar.messages
       .filter((message) => {
         const messageDate = new Date(message.date);
         return messageDate >= today && messageDate < tomorrow;
       })
-      .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+      .sort(
+        (a, b) =>
+          new Date(b.updatedAt || b.createdAt) -
+          new Date(a.updatedAt || a.createdAt)
+      );
 
     if (!todayMessages.length) {
       return res.status(404).json({ message: "No messages found for today" });
     }
 
-    // Get the latest message from today's messages
     const latestMessage = todayMessages[todayMessages.length - 1];
 
     const responseData = {

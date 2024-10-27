@@ -4,14 +4,14 @@ import { DatePickerDemo } from "../DatePicker";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
-import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
+import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 function HeroSection() {
   const { toast } = useToast();
   const { user, isSignedIn } = useUser();
   const email = user?.emailAddresses?.[0]?.emailAddress || "";
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const [userDetails, setUserDetails] = useState({
     firstName: "",
@@ -22,15 +22,11 @@ function HeroSection() {
     imageUrl: "",
     userName: "",
     country: "",
-    dateOfBirth: "",
-    dateOfAnniversary: "",
     address: "",
     state: "",
     city: "",
   });
 
-  const [dob, setDob] = useState<Date>(new Date());
-  const [anniversary, setAnniversary] = useState<Date>(new Date());
   const [country, setCountry] = useState<string>("");
   const [state, setState] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -61,8 +57,7 @@ function HeroSection() {
         imageUrl: details.imageUrl || "",
         userName: details.username || "",
         country: details.country || "",
-        dateOfBirth: details.dateOfBirth || "",
-        dateOfAnniversary: details.dateOfAnniversary || "",
+
         address: details.address || "",
         state: details.state || "",
         city: details.city || "",
@@ -73,8 +68,6 @@ function HeroSection() {
       setState(details.state || "");
       setCity(details.city || "");
       setAddress(details.address || "");
-      setDob(new Date(details.dateOfBirth || ""));
-      setAnniversary(new Date(details.dateOfAnniversary || ""));
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -90,9 +83,16 @@ function HeroSection() {
 
   async function updateUserDetails() {
     try {
-      const response = await axios.post("http://localhost:8000/update-details", {
-        email, state, city, address, country, dob, anniversary,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/update-details",
+        {
+          email,
+          state,
+          city,
+          address,
+          country,
+        }
+      );
 
       if (response.status === 200) {
         toast({
@@ -128,7 +128,9 @@ function HeroSection() {
 
   return (
     <MaxWidth>
-      <h1 className="font-ala text-3xl lg:text-5xl text-[#2664EF] capitalize font-bold mt-5">My Profile</h1>
+      <h1 className="font-ala text-3xl lg:text-5xl text-[#2664EF] capitalize font-bold mt-5">
+        My Profile
+      </h1>
       <form onSubmit={handleSubmit} className="w-[98%] mt-5 mx-auto rounded-md">
         <div className="first_row w-full px-2 flex lg:px-10 gap-7 items-center">
           <div className="left h-full">
@@ -159,26 +161,29 @@ function HeroSection() {
         <div className="second_row flex flex-col gap-2 lg:gap-5 mt-10 items-center w-full px-0 lg:px-10">
           <div className="upper_part w-full px-2 lg:px-10 flex items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">First Name</span> : {userDetails.firstName}
+              <span className="font_bold_class">First Name</span> :{" "}
+              {userDetails.firstName}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Last Name</span> : {userDetails.lastName}
+              <span className="font_bold_class">Last Name</span> :{" "}
+              {userDetails.lastName}
             </h1>
           </div>
 
           <div className="lower_part w-full px-2 lg:px-10 flex items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Phone Number</span> : {userDetails.phoneNumber}
+              <span className="font_bold_class">Phone Number</span> :{" "}
+              {userDetails.phoneNumber}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Clerk Id</span>: {userDetails.clerkId}
+              <span className="font_bold_class">Clerk Id</span>:{" "}
+              {userDetails.clerkId}
             </h1>
           </div>
 
-          {/* Conditionally Render Country, State, City, Address */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Country</span> : {" "}
+              <span className="font_bold_class">Country</span> :{" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setCountry(e.target.value)}
@@ -191,7 +196,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">State</span> : {" "}
+              <span className="font_bold_class">State</span> :{" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setState(e.target.value)}
@@ -205,10 +210,9 @@ function HeroSection() {
             </h1>
           </div>
 
-          {/* Conditionally Render Address and City */}
           <div className="lower_part w-full px-2 lg:px-10 lg:flex-row flex flex-col items-start gap-2 lg:gap-0 lg:items-center justify-between">
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Address</span> : {" "}
+              <span className="font_bold_class">Address</span> :{" "}
               {isEditing ? (
                 <textarea
                   onChange={(e) => setAddress(e.target.value)}
@@ -220,7 +224,7 @@ function HeroSection() {
               )}
             </h1>
             <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">City</span> : {" "}
+              <span className="font_bold_class">City</span> :{" "}
               {isEditing ? (
                 <input
                   onChange={(e) => setCity(e.target.value)}
@@ -230,26 +234,6 @@ function HeroSection() {
                 />
               ) : (
                 userDetails.city || "N/A"
-              )}
-            </h1>
-          </div>
-
-          {/* Date of Birth and Anniversary */}
-          <div className="dates w-full px-2 lg:px-10 flex justify-between">
-            <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Birth</span> : {" "}
-              {isEditing ? (
-                <DatePickerDemo date={dob} setDate={setDob} />
-              ) : (
-                formatFullDate(userDetails.dateOfBirth)
-              )}
-            </h1>
-            <h1 className="font-ala text-lg lg:text-2xl font-medium capitalize">
-              <span className="font_bold_class">Date of Anniversary</span> : {" "}
-              {isEditing ? (
-                <DatePickerDemo date={anniversary} setDate={setAnniversary} />
-              ) : (
-                formatFullDate(userDetails.dateOfAnniversary)
               )}
             </h1>
           </div>
@@ -274,7 +258,7 @@ function HeroSection() {
         </div>
       </form>
     </MaxWidth>
-  )
+  );
 }
 
 export default HeroSection;

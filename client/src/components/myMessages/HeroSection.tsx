@@ -8,8 +8,7 @@ import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useUser } from "@clerk/nextjs";
 import MessageLoader from "../MessageLoader";
-import { useRouter } from "next/navigation"; 
-
+import { useRouter } from "next/navigation";
 
 interface Message {
   message: string;
@@ -20,7 +19,7 @@ interface Message {
 
 function HeroSection() {
   const { user, isSignedIn } = useUser();
-  const router = useRouter(); 
+  const router = useRouter();
   const email = user?.emailAddresses[0]?.emailAddress || "";
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -117,7 +116,7 @@ function HeroSection() {
           description: "Messages uploaded successfully",
         });
         setMessages([]);
-        router.push('/my-avatar'); 
+        router.push("/my-avatar");
       }
     } catch (error) {
       console.log(error);

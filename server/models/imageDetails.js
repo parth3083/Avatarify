@@ -33,11 +33,11 @@ const avatarSchema = new mongoose.Schema(
           required: true,
         },
         date: {
-          type: Date, 
+          type: Date,
           required: true,
         },
         time: {
-          type: Number, 
+          type: Number,
           required: true,
         },
         recurrence: {
@@ -49,7 +49,7 @@ const avatarSchema = new mongoose.Schema(
     ],
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
