@@ -2,7 +2,7 @@ const UserModel = require("../models/user");
 
 const updateUserDetails = async (req, res) => {
   try {
-    const { email, state, city, address, country, dob, anniversary } = req.body;
+    const { email, state, city, address, country } = req.body;
     console.log(dob);
     const isUserAlreadyExists = await UserModel.findOne({ email });
     if (!isUserAlreadyExists) {
@@ -15,8 +15,7 @@ const updateUserDetails = async (req, res) => {
         state,
         city,
         address,
-        dateOfAnniversary: anniversary,
-        dateOfBirth: dob,
+       
       },
       { new: true }
     );

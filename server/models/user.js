@@ -42,12 +42,6 @@ const userSchema = new mongoose.Schema({
   city: {
     type: String,
   },
-  dateOfBirth: {
-    type: String,
-  },
-  dateOfAnniversary: {
-    type: String,
-  },
   address: {
     type: String,
   },
