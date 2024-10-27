@@ -62,6 +62,10 @@ The **Avatarify** enables users to create unique and personalized avatars by con
 
 - **📩 Multiple Message Support:** 
   - The platform allows users to input multiple messages; however, only the latest or most relevant message is displayed based on the scheduled time.
+    
+## ⚒️ Work Flow
+![Hackathon](https://github.com/user-attachments/assets/9307cf91-78d5-472d-b1b0-7bfd4e7d91e9)
+
 
 ## 🎯 Conclusion
 The **Avatar Generation** project combines cutting-edge technology with creative expression, enabling users to bring their messages to life through personalized avatars. With an intuitive design and powerful features, this project offers a unique experience for users looking to enhance their communication.
