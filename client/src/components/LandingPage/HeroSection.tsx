@@ -4,6 +4,7 @@ import Steps from "./Steps";
 import { steps_data } from "@/index";
 import Heading_and_Sunheading from "./Heading_and_Subheading";
 import Image_Container from "./Image_Container";
+import Image_Container2 from "./Image_Container2";
 
 function HeroSection() {
   return (
@@ -43,7 +44,7 @@ function HeroSection() {
           ))}
         </div>
       </div>
-      <Image_Container />
+      <Image_Container2/>
     </main>
   );
 }

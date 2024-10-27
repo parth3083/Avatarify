@@ -3,7 +3,7 @@ const UserModel = require("../models/user");
 const updateUserDetails = async (req, res) => {
   try {
     const { email, state, city, address, country } = req.body;
-    console.log(dob);
+  
     const isUserAlreadyExists = await UserModel.findOne({ email });
     if (!isUserAlreadyExists) {
       return res.status(401).json({ message: "User doen not exist" });
