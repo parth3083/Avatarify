@@ -20,7 +20,7 @@ const updateUserDetails = async (req, res) => {
       { new: true }
     );
 
-    console.log(updateUserDetails);
+    // console.log(updateUserDetails);
     return res.status(200).json({ message: "User data updated successfully" });
   } catch (error) {
     console.log(error);

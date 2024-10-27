@@ -12,7 +12,7 @@ const fetchUserDetails = async (req, res) => {
       data: userDetails,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return res.status(400).json({ message: "Server error" });
   }
 };

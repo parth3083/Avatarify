@@ -12,7 +12,7 @@ const userMessages = async (req, res) => {
     return res.status(401).json({ message: "User does not exist" });
   }
 
-  console.log("Messages received:", messages);
+  // console.log("Messages received:", messages);
 
   const python = spawn("python", [path.join(__dirname, "../utils/audio.py")]);
 
@@ -20,7 +20,7 @@ const userMessages = async (req, res) => {
   python.stdin.end();
 
   python.stdout.on("data", (data) => {
-    console.log(`Python stdout: ${data.toString()}`);
+    // console.log(`Python stdout: ${data.toString()}`);
   });
 
   python.stderr.on("data", (data) => {

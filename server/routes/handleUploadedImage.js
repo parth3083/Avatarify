@@ -23,8 +23,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       return res.status(401).json({ message: "User does not exist" });
     }
 
-    console.log(`Email: ${email}`);
-    console.log(`Avatar ID: ${avatarID}`);
+    // console.log(`Email: ${email}`);
+    // console.log(`Avatar ID: ${avatarID}`);
 
     const imagePath = path.join(__dirname, "../uploads", file.filename);
 
@@ -46,7 +46,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
       genderPredictor.stdout.on("data", (data) => {
         const gender = data.toString().trim();
-        console.log(`Predicted gender: ${gender}`);
+        // console.log(`Predicted gender: ${gender}`);
 
         const genderValue = gender === "man" ? 1 : 2;
 
@@ -57,21 +57,21 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         ]);
 
         faceSwapProcess.on("close", (code) => {
-          console.log(`faceSwapping.py exited with code ${code}`);
+          // console.log(`faceSwapping.py exited with code ${code}`);
 
           const gifCreationProcess = spawn("python", [
             path.join(__dirname, "../utils/Gifcreation.py"),
           ]);
 
           gifCreationProcess.on("close", (code) => {
-            console.log(`Gifcreation.py exited with code ${code}`);
+            // console.log(`Gifcreation.py exited with code ${code}`);
             runCombineAndAudioLength(req, res);
           });
         });
       });
     }
   } catch (error) {
-    console.log("Error:", error);
+    // console.log("Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -99,18 +99,18 @@ async function runCombineAndAudioLength(req, res) {
       const videoPath = path.join(__dirname, "../output");
       const audioPath = path.join(__dirname, "../audio");
 
-      console.log(imagePath);
-      console.log(gifPath);
-      console.log(videoPath);
+      // console.log(imagePath);
+      // console.log(gifPath);
+      // console.log(videoPath);
 
       const imageFiles = fs.readdirSync(imagePath);
       const gifFiles = fs.readdirSync(gifPath);
       const videoFiles = fs.readdirSync(videoPath);
       const audioFiles = fs.readdirSync(audioPath);
 
-      console.log(`Image Files: ${imageFiles}`);
-      console.log(`GIF Files: ${gifFiles}`);
-      console.log(`Video Files: ${videoFiles}`);
+      // console.log(`Image Files: ${imageFiles}`);
+      // console.log(`GIF Files: ${gifFiles}`);
+      // console.log(`Video Files: ${videoFiles}`);
 
       if (!imageFiles.length || !gifFiles.length || !videoFiles.length) {
         return res
@@ -126,19 +126,19 @@ async function runCombineAndAudioLength(req, res) {
         path.join(imagePath, imageFile),
         { resource_type: "image" }
       );
-      console.log("Image uploaded:", imageUpload.secure_url);
+      // console.log("Image uploaded:", imageUpload.secure_url);
 
       const gifUpload = await cloudinary.uploader.upload(
         path.join(gifPath, gifFile),
         { resource_type: "image" }
       );
-      console.log("GIF uploaded:", gifUpload.secure_url);
+      // console.log("GIF uploaded:", gifUpload.secure_url);
 
       const videoUpload = await cloudinary.uploader.upload(
         path.join(videoPath, videoFile),
         { resource_type: "video" }
       );
-      console.log("Video uploaded:", videoUpload.secure_url);
+      // console.log("Video uploaded:", videoUpload.secure_url);
 
       const { email, avatarID } = req.body;
       const user = await UserModel.findOne({ email });

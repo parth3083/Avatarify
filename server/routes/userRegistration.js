@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
         createdAt: Date.now(),
       });
       const reponse = await newUser.save();
-      console.log(reponse);
+      // console.log(reponse);
       res.status(201).json({
         message: "User registered successfully",
       });
