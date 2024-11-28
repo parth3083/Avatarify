@@ -48,6 +48,8 @@ The **Avatarify** enables users to create unique and personalized avatars by con
   - `moviepy`: For video editing and integrating audio
   - `opencv`: For image processing tasks
   - `insightface` and `deepface`: For advanced face detection and analysis
+  - `buffalo_l`: Leveraged for precise face detection
+  - `inswapper_128.onnx`: Utilized for accurate face-swapping
 
 ## 🚀 Key Features
 
