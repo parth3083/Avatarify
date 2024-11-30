@@ -134,10 +134,21 @@ async function runCombineAndAudioLength(req, res) {
       );
       // console.log("GIF uploaded:", gifUpload.secure_url);
 
-      const videoUpload = await cloudinary.uploader.upload(
-        path.join(videoPath, videoFile),
-        { resource_type: "video" }
-      );
+      const files = fs.readdirSync(videoPath);
+
+      const videoUrls = [];
+
+      // Loop through and upload each file to Cloudinary
+      for (const file of files) {
+        const uploadResponse = await cloudinary.uploader.upload(
+          path.join(videoPath, file),
+          { resource_type: "video" }
+        );
+        console.log(`Uploaded ${file}:`, uploadResponse.secure_url);
+
+        // Add the secure URL to the array
+        videoUrls.push(uploadResponse.secure_url);
+      }
       // console.log("Video uploaded:", videoUpload.secure_url);
 
       const { email, avatarID } = req.body;
@@ -167,7 +178,7 @@ async function runCombineAndAudioLength(req, res) {
         avatarId: avatarID,
         imageUrl: imageUpload.secure_url,
         gifUrl: gifUpload.secure_url,
-        videoUrl: videoUpload.secure_url,
+        videoUrl: videoUrls,
         messages: todaysMessages,
       });
 
@@ -175,7 +186,14 @@ async function runCombineAndAudioLength(req, res) {
 
       fs.unlinkSync(path.join(imagePath, imageFile));
       fs.unlinkSync(path.join(gifPath, gifFile));
-      fs.unlinkSync(path.join(videoPath, videoFile));
+      const videoFolder = fs.readdirSync(videoPath);
+
+      for (const file of videoFolder) {
+        const filePath = path.join(videoPath, file);
+        fs.unlinkSync(filePath);
+        console.log(`Deleted: ${file}`);
+      }
+
       if (audioFiles.length > 0) {
         audioFiles.forEach((file) => {
           fs.unlink(path.join(audioPath, file), (err) => {

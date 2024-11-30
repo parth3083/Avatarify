@@ -45,7 +45,7 @@ const getTodaysMessage = async (req, res) => {
       avatarId: avatar.avatarId,
       imageUrl: avatar.imageUrl,
       gifUrl: avatar.gifUrl,
-      videoUrl: avatar.videoUrl,
+      videoUrl: avatar.videoUrl[avatar.videoUrl.length - 1],
       message: latestMessage,
     };
 

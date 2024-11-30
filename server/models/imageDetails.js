@@ -22,10 +22,12 @@ const avatarSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    videoUrl: {
-      type: String,
-      required: true,
-    },
+    videoUrl: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     messages: [
       {
         message: {
